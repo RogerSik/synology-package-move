@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e  # Exit immediately if a command exits with a non-zero status
+
 SOURCE_VOLUME=$1
 DEST_VOLUME=$2
 APPSTORE_DIR="/$SOURCE_VOLUME/@appstore"
@@ -18,8 +20,23 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Stop the package $PACKAGE_NAME"
     synopkg stop "$PACKAGE_NAME"
 
-    echo "Move the package $PACKAGE_NAME to the new location"
-    mv "$PACKAGE_PATH" "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
+    echo "Move $SOURCE_VOLUME/@appstore/$PACKAGE_NAME to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@appstore/$PACKAGE_NAME"  "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
+
+    echo "Move $PACKAGE_NAME from $SOURCE_VOLUME/@appconf to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@appconf/$PACKAGE_NAME" "/$DEST_VOLUME/@appconf/$PACKAGE_NAME"
+
+    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@appdata to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@appdata/$PACKAGE_NAME" "/$DEST_VOLUME/@appdata/$PACKAGE_NAME"
+
+    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@apphome to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@apphome/$PACKAGE_NAME" "/$DEST_VOLUME/@apphome/$PACKAGE_NAME"
+
+    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@appshare to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@appshare/$PACKAGE_NAME" "/$DEST_VOLUME/@appshare/$PACKAGE_NAME"
+
+    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@apptemp to the new target $DEST_VOLUME"
+    mv "/$SOURCE_VOLUME/@apptemp/$PACKAGE_NAME" "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME"
 
     echo "Remove the existing target of $PACKAGE_NAME for volume change"
     rm -f "/var/packages/$PACKAGE_NAME/target"
@@ -30,6 +47,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Start the package $PACKAGE_NAME"
     synopkg start "$PACKAGE_NAME"
   done
+
 else
   echo "Glad i asked"
 fi
