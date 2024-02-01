@@ -28,5 +28,3 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 else
   echo "Package operations not confirmed. Please ensure that the package is stopped in package centrum."
 fi
-
-
