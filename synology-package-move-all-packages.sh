@@ -20,35 +20,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Stop the package $PACKAGE_NAME"
     synopkg stop "$PACKAGE_NAME"
 
-    # appstore
-    mv "/$SOURCE_VOLUME/@appstore/$PACKAGE_NAME"  "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/target"
-    ln -s "/$DEST_VOLUME/@appstore/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/target"
-
-    # appconf
-    mv "/$SOURCE_VOLUME/@appconf/$PACKAGE_NAME" "/$DEST_VOLUME/@appconf/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/etc"
-    ln -s "/$DEST_VOLUME/@appconf/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/etc"
-
-    #
-    mv "/$SOURCE_VOLUME/@appdata/$PACKAGE_NAME" "/$DEST_VOLUME/@appdata/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/var"
-    ln -s "/$DEST_VOLUME/@appdata/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/var"
-
-    #
-    mv "/$SOURCE_VOLUME/@apphome/$PACKAGE_NAME" "/$DEST_VOLUME/@apphome/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/home"
-    ln -s "/$DEST_VOLUME/@apphome/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/home"
-
-    #
-    mv "/$SOURCE_VOLUME/@appshare/$PACKAGE_NAME" "/$DEST_VOLUME/@appshare/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/share"
-    ln -s "/$DEST_VOLUME/@appshare/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/share"
-
-    #
-    mv "/$SOURCE_VOLUME/@apptemp/$PACKAGE_NAME" "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME"
-    rm -f "/var/packages/$PACKAGE_NAME/tmp"
-    ln -s "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/tmp"
+  # Loop through the directories and perform the required actions
+  for DIR in appstore appconf appdata apphome appshare apptemp; do
+    mv "/$SOURCE_VOLUME/@$DIR/$PACKAGE_NAME" "/$DEST_VOLUME/@$DIR/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/${DIR%temp*}"  # Removing 'temp' from the symlink path
+    ln -s "/$DEST_VOLUME/@$DIR/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/${DIR%temp*}"
+  done
 
     echo "Start the package $PACKAGE_NAME"
     synopkg start "$PACKAGE_NAME"
