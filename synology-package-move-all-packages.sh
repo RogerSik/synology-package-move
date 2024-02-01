@@ -20,29 +20,35 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Stop the package $PACKAGE_NAME"
     synopkg stop "$PACKAGE_NAME"
 
-    echo "Move $SOURCE_VOLUME/@appstore/$PACKAGE_NAME to the new target $DEST_VOLUME"
+    # appstore
     mv "/$SOURCE_VOLUME/@appstore/$PACKAGE_NAME"  "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
-
-    echo "Move $PACKAGE_NAME from $SOURCE_VOLUME/@appconf to the new target $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@appconf/$PACKAGE_NAME" "/$DEST_VOLUME/@appconf/$PACKAGE_NAME"
-
-    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@appdata to the new target $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@appdata/$PACKAGE_NAME" "/$DEST_VOLUME/@appdata/$PACKAGE_NAME"
-
-    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@apphome to the new target $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@apphome/$PACKAGE_NAME" "/$DEST_VOLUME/@apphome/$PACKAGE_NAME"
-
-    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@appshare to the new target $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@appshare/$PACKAGE_NAME" "/$DEST_VOLUME/@appshare/$PACKAGE_NAME"
-
-    echo "Move the package $PACKAGE_NAME from $SOURCE_VOLUME/@apptemp to the new target $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@apptemp/$PACKAGE_NAME" "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME"
-
-    echo "Remove the existing target of $PACKAGE_NAME for volume change"
     rm -f "/var/packages/$PACKAGE_NAME/target"
-
-    echo "Create new target of $PACKAGE_NAME which points to $DEST_VOLUME"
     ln -s "/$DEST_VOLUME/@appstore/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/target"
+
+    # appconf
+    mv "/$SOURCE_VOLUME/@appconf/$PACKAGE_NAME" "/$DEST_VOLUME/@appconf/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/etc"
+    ln -s "/$DEST_VOLUME/@appconf/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/etc"
+
+    #
+    mv "/$SOURCE_VOLUME/@appdata/$PACKAGE_NAME" "/$DEST_VOLUME/@appdata/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/var"
+    ln -s "/$DEST_VOLUME/@appdata/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/var"
+
+    #
+    mv "/$SOURCE_VOLUME/@apphome/$PACKAGE_NAME" "/$DEST_VOLUME/@apphome/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/home"
+    ln -s "/$DEST_VOLUME/@apphome/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/home"
+
+    #
+    mv "/$SOURCE_VOLUME/@appshare/$PACKAGE_NAME" "/$DEST_VOLUME/@appshare/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/share"
+    ln -s "/$DEST_VOLUME/@appshare/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/share"
+
+    #
+    mv "/$SOURCE_VOLUME/@apptemp/$PACKAGE_NAME" "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME"
+    rm -f "/var/packages/$PACKAGE_NAME/tmp"
+    ln -s "/$DEST_VOLUME/@apptemp/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/tmp"
 
     echo "Start the package $PACKAGE_NAME"
     synopkg start "$PACKAGE_NAME"
