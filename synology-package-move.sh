@@ -12,19 +12,19 @@ PACKAGE_NAME=$1
 SOURCE_VOLUME=$2
 DEST_VOLUME=$3
 
-read -p "Did you stopped $PACKAGE_NAME in Synology package centrum? (y/n): " -n 1 -r
+echo "Stop the package $PACKAGE_NAME"
+synopkg stop "$PACKAGE_NAME"
 
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Move package from $SOURCE_VOLUME to $DEST_VOLUME"
-    mv "/$SOURCE_VOLUME/@appstore/$PACKAGE_NAME" "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
+echo "Move package from $SOURCE_VOLUME to $DEST_VOLUME"
+mv "/$SOURCE_VOLUME/@appstore/$PACKAGE_NAME" "/$DEST_VOLUME/@appstore/$PACKAGE_NAME"
 
-    echo "Remove the existing target"
-    rm -f "/var/packages/$PACKAGE_NAME/target"
+echo "Remove the existing target"
+rm -f "/var/packages/$PACKAGE_NAME/target"
 
-    echo "Create a symbolic link to the new location"
-    ln -s "/$DEST_VOLUME/@appstore/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/target"
+echo "Create a symbolic link to the new location"
+ln -s "/$DEST_VOLUME/@appstore/$PACKAGE_NAME" "/var/packages/$PACKAGE_NAME/target"
 
-  echo "Package operations completed."
-else
-  echo "Package operations not confirmed. Please ensure that the package is stopped in package centrum."
-fi
+echo "Start the package $PACKAGE_NAME"
+synopkg start "$PACKAGE_NAME"
+
+echo "Move of $PACKAGE_NAME completed."
